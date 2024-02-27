@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
+import TodoList from "./componant/TodoList";
+import { TodosContexts } from "./contexts/TodosContexts";
+// MUI
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 
 function App() {
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: "#757ce8",
+        main: "#3f50b5",
+        // main: "#F02752",
+        dark: "#002884",
+        contrastText: "#fff",
+      },
+      label: {
+        main: "#454555",
+      },
+    },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <TodosContexts.Provider value={[]}>
+        <TodoList />
+      </TodosContexts.Provider>
+    </ThemeProvider>
   );
 }
 
