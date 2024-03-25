@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TodosContexts } from "../contexts/TodosContexts";
 
 // Mui Library
 import CheckIcon from "@mui/icons-material/Check";
@@ -14,18 +15,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function Todo({
-  id,
-  title,
-  content,
-  checked,
-  handleDelete,
-  handleUpdate,
-}) {
+export default function Todo({ id, title, content, checked }) {
+  const { todos, setTodos } = useContext(TodosContexts);
   const [openDelete, setOpenDelete] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [update, setUpdate] = useState({ title: title, content: content, isChecked: checked });
-  // const [check, setCheck] = useState(false);
+  const [update, setUpdate] = useState({
+    title: title,
+    content: content,
+    isChecked: checked,
+  });
 
   const handleClickOpenDelete = () => {
     setOpenDelete(true);
@@ -40,22 +38,50 @@ export default function Todo({
     setOpenUpdate(false);
   };
 
+  function handleUpdate(update) {
+    let newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        let t = {
+          ...todo,
+          title: update.title,
+          content: update.content,
+          isChecked: update.isChecked,
+        };
+        return t;
+      } else return todo;
+    });
+    setTodos(newTodos);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+  }
+  function handleDelete() {
+    let newTodos = todos.filter((todo) => {
+      return todo.id != id;
+    });
+    setTodos(newTodos);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+  }
+  function handleCheck() {
+    let newTodos = todos.map((todo) => {
+      return todo.id === id ? { ...todo, isChecked: !todo.isChecked } : todo;
+    });
+    setTodos(newTodos);
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+  }
+
   return (
     <>
-      <div style={{ textAlign: "start", textDecoration: checked ? "line-through" : "none" }}>
+      <div
+        style={{
+          textAlign: "start",
+          textDecoration: checked ? "line-through" : "none",
+        }}
+      >
         <h3>{title}</h3>
         <p>{content}</p>
       </div>
 
       <Stack direction="row">
-        <IconButton
-          sx={{ color: "green" }}
-          onClick={() => {
-            // setCheck(!check);
-            setUpdate({...update,isChecked : !checked})
-            handleUpdate(id,{...update,isChecked : !checked})
-          }}
-        >
+        <IconButton sx={{ color: "green" }} onClick={handleCheck}>
           <CheckIcon />
         </IconButton>
         <IconButton onClick={handleClickOpenUpdate}>
@@ -77,12 +103,7 @@ export default function Todo({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Disagree</Button>
-          <Button
-            onClick={() => {
-              handleDelete(id);
-            }}
-            autoFocus
-          >
+          <Button onClick={handleDelete} autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -128,7 +149,7 @@ export default function Todo({
           <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={() => {
-              handleUpdate(id, update);
+              handleUpdate(update);
               handleClose();
             }}
           >

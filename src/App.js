@@ -4,9 +4,10 @@ import TodoList from "./componant/TodoList";
 import { TodosContexts } from "./contexts/TodosContexts";
 // MUI
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
 
 function App() {
+  const [todos, setTodos] = useState([]);
+
 
   const theme = createTheme({
     palette: {
@@ -25,7 +26,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <TodosContexts.Provider value={[]}>
+      <TodosContexts.Provider value={{todos,setTodos}}>
         <TodoList />
       </TodosContexts.Provider>
     </ThemeProvider>

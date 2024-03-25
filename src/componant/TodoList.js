@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useMemo } from "react";
-import Todo from "./Todo";
 import { TodosContexts } from "../contexts/TodosContexts";
+import Todo from "./Todo";
 
 // ID
 import { v4 as uuidv4 } from "uuid";
@@ -13,10 +13,10 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 
 export default function TodoList() {
-  const [todos, setTodos] = useState([]);
+  const {todos,setTodos} = useContext(TodosContexts)
   const [titleField, setTitleField] = useState("");
   const [typeList, setTypeList] = useState("all");
-  const [todosList1, setTodosList1] = useState(null);
+  const [todosList, setTodosList] = useState(null);
 
   useEffect(() => {
     if (window.localStorage.getItem("todos")) {
@@ -31,8 +31,6 @@ export default function TodoList() {
         return (
           <div key={todo.id} className="task">
             <Todo
-              handleDelete={handleDelete}
-              handleUpdate={handleUpdate}
               id={todo.id}
               title={todo.title}
               content={todo.content}
@@ -41,7 +39,7 @@ export default function TodoList() {
           </div>
         );
       });
-      setTodosList1(todosList);
+      setTodosList(todosList);
       return;
     }
     if (typeList === "done") {
@@ -50,8 +48,6 @@ export default function TodoList() {
           return (
             <div key={todo.id} className="task">
               <Todo
-                handleDelete={handleDelete}
-                handleUpdate={handleUpdate}
                 id={todo.id}
                 title={todo.title}
                 content={todo.content}
@@ -61,7 +57,7 @@ export default function TodoList() {
           );
         }
       });
-      setTodosList1(todosListChecked);
+      setTodosList(todosListChecked);
     }
     if (typeList === "progress") {
       let todosListProgress = todos.map((todo) => {
@@ -69,8 +65,6 @@ export default function TodoList() {
           return (
             <div key={todo.id} className="task">
               <Todo
-                handleDelete={handleDelete}
-                handleUpdate={handleUpdate}
                 id={todo.id}
                 title={todo.title}
                 content={todo.content}
@@ -80,7 +74,7 @@ export default function TodoList() {
           );
         }
       });
-      setTodosList1(todosListProgress);
+      setTodosList(todosListProgress);
     }
   }, [todos, typeList]);
 
@@ -142,29 +136,7 @@ export default function TodoList() {
     localStorage.setItem("todos", JSON.stringify(todosAdded));
     setTitleField("");
   }
-
-  function handleDelete(id) {
-    let newTodos = todos.filter((todo) => {
-      return todo.id != id;
-    });
-    setTodos(newTodos);
-    localStorage.setItem("todos", JSON.stringify(newTodos));
-  }
-  function handleUpdate(id, update) {
-    let newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        let t = {
-          ...todo,
-          title: update.title,
-          content: update.content,
-          isChecked: update.isChecked,
-        };
-        return t;
-      } else return todo;
-    });
-    setTodos(newTodos);
-    localStorage.setItem("todos", JSON.stringify(newTodos));
-  }
+ 
   return (
     <>
       <Container
@@ -208,12 +180,7 @@ export default function TodoList() {
             </Button>
           </div>
           <div className="tasks">
-            {/* {typeList === "all"
-              ? todosList
-              : typeList === "done"
-              ? todosListChecked
-              : todosListProgress} */}
-            {todosList1}
+            {todosList}
           </div>
         </Box>
         <Stack
