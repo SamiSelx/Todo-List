@@ -81,14 +81,14 @@ export default function Todo({ id, title, content, checked }) {
       </div>
 
       <Stack direction="row">
-        <IconButton sx={{ color: "green" }} onClick={handleCheck}>
-          <CheckIcon />
+        <IconButton  onClick={handleCheck}>
+          <CheckIcon sx={{ color: "#22bb33", fontSize:"1.1em" }}/>
         </IconButton>
         <IconButton onClick={handleClickOpenUpdate}>
-          <EditIcon color="primary" />
+          <EditIcon sx={{color:"#001F8F", fontSize:"1.1em"}} />
         </IconButton>
         <IconButton onClick={handleClickOpenDelete}>
-          <DeleteIcon sx={{ color: "#F02752" }} />
+          <DeleteIcon sx={{ color: "#F02752", fontSize:"1.1em" }} />
         </IconButton>
       </Stack>
       {/* Delete Dialog */}
@@ -102,8 +102,8 @@ export default function Todo({ id, title, content, checked }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleDelete} autoFocus>
+          <Button onClick={handleClose} sx={{color:"#F02752"}}>Disagree</Button>
+          <Button onClick={handleDelete}  autoFocus>
             Delete
           </Button>
         </DialogActions>
@@ -146,7 +146,7 @@ export default function Todo({ id, title, content, checked }) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose} sx={{color:"#F02752"}}>Cancel</Button>
           <Button
             onClick={() => {
               handleUpdate(update);
